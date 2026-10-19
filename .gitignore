@@ -1,0 +1,79 @@
+# FAS-Agententeam-Plattform
+# Git-Ausschlussregeln der FAS-Agententeam-Plattform
+#
+# Grundsatz: Standardmaessig alles ausschliessen.
+# Nur ausdruecklich freigegebene Dokumente zulassen.
+
+*
+
+# Vier Root-Dateien
+!/.gitignore
+!/README.md
+!/AGENTS.md
+!/DOCUMENT_INDEX.md
+!/PROJECT_STATUS.md
+
+# Nur benoetigte Verzeichnispfade oeffnen
+!/00_governance/
+!/01_architecture/
+!/03_operations/
+!/04_work_management/
+!/12_reports/
+!/99_archive/
+
+# Alle Inhalte in diesen Bereichen zunaechst ausschliessen
+/00_governance/*
+/01_architecture/*
+/03_operations/*
+/04_work_management/*
+/12_reports/*
+/99_archive/*
+
+# Gezielte Dokumentenpfade
+!/00_governance/policies/
+!/00_governance/architecture_decisions/
+!/01_architecture/02_FAS – Zielarchitektur und technische Schutzgrenzen.md
+!/03_operations/inventory/
+!/03_operations/runbooks/
+!/04_work_management/handoffs/
+!/04_work_management/requests/
+!/12_reports/handovers/
+!/99_archive/superseded/
+
+# Auch innerhalb der Zielverzeichnisse nur Einzeldateien zulassen
+/00_governance/policies/*
+/00_governance/architecture_decisions/*
+/03_operations/inventory/*
+/03_operations/runbooks/*
+/04_work_management/handoffs/*
+/04_work_management/requests/*
+/12_reports/handovers/*
+/99_archive/superseded/*
+
+# Normative Stammdokumente und ADR
+!/00_governance/policies/01_FAS – Master-Prompt-Agententeam.md
+!/00_governance/architecture_decisions/FAS-ADR-STANDORT-2026-10-17-001.md
+
+# Bestandsaufnahme und Umsetzungsplan
+!/03_operations/inventory/FAS-Bestandsaufnahme.txt
+!/03_operations/runbooks/03_UMSETZUNGSPLAN.md
+
+# Entwicklungsauftrag und technischer Bericht
+!/04_work_management/handoffs/Technischer Prüfbericht – FAS-DEV-0001.md
+!/04_work_management/requests/Arbeitsauftrag an externen Coding-Agenten.md
+
+# Projektuebergabe
+!/12_reports/handovers/FAS-Agententeam–Korrigierte Projektstatus.md
+
+# Drei historische Planungsdateien
+!/99_archive/superseded/FAS_Agententeam_Infrastruktur_Umsetzungsplan_Revision_002_Pruefentwurf.md
+!/99_archive/superseded/FAS_Agententeam_Zielarchitektur, Aufsicht und dauerhafter Strukturplan.md
+!/99_archive/superseded/FAS–Agententeam_Konsolidierte Struktur_Aufbauplan.md
+
+# Sicherheitskritische Bereiche bleiben durch * ausgeschlossen:
+# 05_workspaces/
+# 06_repositories/ einschliesslich des Testrepositorys
+# 06_repositories/models/ und aller Modellgewichte
+# 08_audit/
+# 11_backup_restore/
+# Laufzeitdaten, Secrets, Caches und technische Konfigurationen
