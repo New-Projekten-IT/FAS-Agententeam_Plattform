@@ -1,61 +1,83 @@
 # FAS-Agententeam-Plattform – Projektstatus
 
-**Status:** Fortschreibungsentwurf auf Grundlage bestätigter Dokumentationsprüfungen und berichteter technischer Zwischenstände – keine allgemeine Betriebs- oder Ausführungsfreigabe  
-**Berichtsstand:** 19.10.2026; technische Einzelbefunde behalten ihre jeweiligen Prüfzeitpunkte und Evidenzgrenzen  
-**Verbindlicher Plattform-Root:** `C:\FAS-Agententeam_Plattform\` (ausdrückliche menschliche Entscheidung, 17.10.2026)
+**Dokumentstatus:** Nicht normative, konsolidierte **Prüffassung** vom 22.10.2026. Noch keine unabhängige Abschlussprüfung dieser Fassung und keine menschliche Freigabe zur Übernahme oder Git-Versionierung. Keine allgemeine Betriebs-, Schreib- oder Agentenausführungsfreigabe.
 
-## Evidenzstand
+**Berichtsstand:** 22.10.2026. Historische Prüfungen behalten ihren jeweiligen Zeitpunkt und ihre Nachweisgrenzen. **Aktuelle Projektphase:** 2 – Einzelagent (noch nicht abgenommen).
 
-| Gegenstand | Einordnung | Beleg / Einschränkung |
-|---|---|---|
-| Plattform-Root auf C: | Nachgewiesen durch Nutzer-PowerShell-Ausgaben | `C:\FAS-Agententeam_Plattform\`; nicht D: |
-| Struktur | Nachgewiesen durch Nutzer-Ausgabe und Inventar | 15 Hauptordner, 68 Unterordner, 83 untergeordnete Verzeichnisse; 84 einschließlich Root |
-| Root-Dateien | Vorhanden; gezielte inhaltliche Fortschreibung | Bei der historischen Inventur zunächst leer, später befüllt; veraltete Referenzen werden im gesondert genehmigten Änderungsauftrag korrigiert |
-| Inventar | Vorhanden, Inhalt geprüft | `03_operations\inventory\FAS-Bestandsaufnahme.txt` (10.229 Byte laut Nutzer-Ausgabe) ist ein Strukturverzeichnislisting; kein Technik-/Sicherheitsgutachten |
-| Laufwerk C: | Nachgewiesen durch Nutzer-Ausgabe | NTFS, Größe 1.979.741.892.608 Byte, frei 925.625.073.664 Byte zum Prüfzeitpunkt |
-| C: als dauerhafter Standort | Menschlich entschieden und dokumentiert | `00_governance\architecture_decisions\FAS-ADR-STANDORT-2026-10-17-001.md` |
-| Mobile Arbeitskopie D: | Als Dokumentenquelle verwendet | `D:\FAS-Agententeam_Plattform\`; getrennte Arbeitskopie, kein zweiter aktiver Entwicklungsplattform-Root |
-| Dokumentationsübernahme | Abgeschlossen und fachlich abgenommen | Drei historische Planungsdokumente archiviert, vier bereinigte Dokumente ergänzt; SHA-256-Verifikation und Prüfentscheidung 037 vom 19.10.2026 |
-| Docker Agent (cagent) | CLI innerhalb der Sandbox grundsätzlich aufrufbar | Die grundsätzliche Aufrufbarkeit der Docker-Agent-CLI innerhalb der Sandbox ist durch vorhandene Konsolenausgaben belegt. Erfolgreiche lokale Modellkommunikation, funktionsfähiges Tool-Calling und die erfolgreiche Bearbeitung eines konkreten Einzelagentenauftrags sind nicht nachgewiesen. |
-| Docker Sandboxes / LM Studio | Historisch berichtet | Frühere Isolation-/Modelltests, keine aktuelle Team-Integration bestätigt |
-| Git im Plattform-Root | Kein Git-Repository nachgewiesen | `git -C C:\FAS-Agententeam_Plattform\ ...` ergab „not a git repository“; getrenntes Testrepository ist davon zu unterscheiden. Keine Git-Initialisierung oder Git-Operation freigegeben. |
-| Rollenschutz / Audit / Backup / Restore | Keine vollständige technische Abnahme nachgewiesen | Verzeichnisexistenz und die verifizierten Sicherungskopien der vier Root-Dateien ersetzen keine umfassende Backup-/Restore- oder Sicherheitsprüfung. |
-| FAS-GIT-001 und produktive Originale | Nicht freigegeben | Separat geschützt; keine Änderung zulässig |
+**Plattform-Root:** `C:\FAS-Agententeam_Plattform\` (Standortentscheidung des Nutzers vom 17.10.2026). Die drei normativen Quellen bleiben allein für KI-Verhalten, Zielarchitektur und Umsetzungsreihenfolge zuständig; dieser Statusbericht ersetzt keine von ihnen.
 
-## Operative Reihenfolge
+## 1. Gesicherte historische Grundlagen
 
-Die verbindliche operative Phasenfolge 0–6 steht in `03_operations\runbooks\03_UMSETZUNGSPLAN.md`.
+| Gegenstand | Dokumentierter Befund und Nachweisgrenze |
+|---|---|
+| Standort und Struktur | C: als dauerhafter Plattform-Root entschieden; historisch 15 Haupt- und 68 Unterverzeichnisse dokumentiert. Ordnerexistenz ist kein ACL- oder Funktionsnachweis. Die separate mobile Arbeitskopie auf D: ist nicht der aktive Root. |
+| Bestandsinventar | `03_operations\inventory\FAS-Bestandsaufnahme.txt` ist eine historische Strukturauflistung (17.10.2026), kein Sicherheitsgutachten. |
+| Dokumentenübernahme | Archivierung dreier historischer Planungsdokumente und Übernahme bereinigter Dokumente laut früheren Nachweisen; Prüfentscheidung 037 vom 19.10.2026. Frühere SHA-256-Prüfungen sind keine aktuelle Gesamtabnahme. |
+| Git-Baseline | Auftrag `FAS-AUS-062`, Abschlussbericht 067 und Prüfentscheidung 068: Root-Commit `91f62c0a57487eb4e1c6d8e5e034e67825360454`, Branch `main`, 16 Dateien (15 Dokumentationsdateien und `.gitignore`). Die historische SHA-256-Zuordnung aller älteren Fassungen ist nicht vollständig unabhängig belegt. |
+| LM Studio | Frühere Nutzerprüfungen 008–010: `qwen3.8-27b` und `text-embedding-nomic-embed-text-v1.5` lokal gespeichert; damals kein laufender API-Server und kein geladenes Modell. Sekundär überlieferter Prüfblock 015 (20.10.2026): Server gestoppt, Qwen laut `lms ps` `GENERATING`, Kontext 32.768, Parallelität 4. Originalkonsolenbeleg zu 015 liegt hier nicht vor; aktueller stabiler Zustand ungeklärt. |
+| Historischer Testauftrag | `FAS-P2-LMSTUDIO-001`, Revision 02, nicht als vollständig abgenommen belegt. Kontrollentscheidung 006 `NICHT BEURTEILBAR` ist aus späterer Kontrollüberlieferung berichtet; vollständige Originalunterlagen liegen hier nicht vor. |
+| Sicherheits-/Betriebsabnahme | Unabhängige Rollenprüfung, manipulationsgeschütztes Audit, Systembackup und tatsächlicher Restore sind nicht vollständig nachgewiesen. FAS-Originalbereiche und FAS-GIT-001 bleiben geschützt. |
 
-Der maßgebliche Bearbeitungsstand ist **Phase 2**. Die grundsätzliche Aufrufbarkeit der Docker-Agent-CLI innerhalb der Sandbox ist durch vorhandene Konsolenausgaben belegt. Eine erfolgreiche Kommunikation mit einem lokalen Sprachmodell, funktionsfähiges Tool-Calling sowie die erfolgreiche Bearbeitung eines konkreten Einzelagentenauftrags bleiben unbewiesen.
+## 2. Technische Nutzer-Nachweise vom 22.10.2026
 
-Die frühere Gatesystematik G0–G7 ist historisch und begründet keine aktuelle Ausführungsfreigabe. Die nachgewiesene Verzeichnisanlage wird nicht rückwirkend als vollständige Sicherheits- oder Betriebsabnahme bewertet.
+Die folgenden Befunde stammen aus in der Unterhaltung übermittelten PowerShell-Ausgaben. Sie sind **durch Nutzer-Konsolenausgaben dokumentiert**, nicht von einer unabhängigen Kontrollinstanz auf dem Host reproduziert oder als Gesamtfunktion abgenommen.
 
-## Offene Punkte vor dem nächsten schreibenden Projektschritt
+### 2.1 Ollama und Nemotron auf dem Windows-Host
 
-Die Standort-ADR ist vorhanden. Die bereinigten aktuellen Stammdokumente wurden übernommen und die historischen Planungsfassungen kontrolliert archiviert. Diese Arbeiten wurden mit Prüfentscheidung 037 fachlich abgenommen und sind nicht erneut auszuführen.
+- Ollama erreichbar unter `http://127.0.0.1:11434/api/tags`; die Modelle `nemotron-3.5-lightning:30b`, `glm-4.7-flash:latest`, `gpt-oss-20b-32k:latest` und `gpt-oss:20b` wurden aufgelistet.
+- Nemotron: Modellkennung `nemotron-3.5-lightning:30b`, Digest beginnt mit `e7a64ff15fb1`, GGUF, Architektur `nemotron_h_moe`, 32,9B Parameter, `Q4_K_M`; native Ollama-API nennt Fähigkeiten `completion`, `tools`, `thinking`. Diese Angaben allein sind kein Tool-Calling-Nachweis.
+- Erster direkter Inferenztest: `done=True`, 64 Tokens, leeres `response`-Feld, Gesamtdauer 50,54 s (Ladezeit 32,70 s). Ursache der Leerausgabe nicht abschließend nachgewiesen.
+- Zweiter direkter Inferenztest: Antwort **`TEST_OK`**, `done_reason=stop`, `thinking` 552 Zeichen, 155 generierte Tokens, 8,12 s. Damit ist eine funktionierende **direkte lokale Ollama-Inferenz** dokumentiert, jedoch keine Agenteninferenz.
+- Ressourcenprüfung bei geladenem Nemotron: `ollama ps` meldete `21%/79% CPU/GPU`, geladene Größe 26 GB, Kontext 4096, Runner `llamacpp`. Der Prozentwert bezeichnet die gemeldete Modellverteilung, nicht momentane Prozessorlast. Weitere Leistungs- und Stabilitätsprüfungen stehen aus.
 
-1. Die vier Root-Dateien gezielt auf aktuelle normative Verweise und evidenzgerechte Statusangaben korrigieren; hierzu gelten die bestätigten Prüfentscheidungen 041, 043, 044 und 045 sowie die ausdrücklich erteilte menschliche Schreibfreigabe. Die abschließende technische Abnahme steht noch aus.
-2. Phase 2 ausschließlich im Rahmen **ausdrücklich genehmigter und technisch begrenzter Aufträge** fortsetzen. Innerhalb eines solchen Auftrags dürfen die vom Auftrag umfassten, technisch zulässigen Teilschritte ohne wiederholte Einzelfreigaben ausgeführt werden. Maßnahmen außerhalb des genehmigten Umfangs, Änderungen bestehender Schutzgrenzen und neue risikorelevante Eingriffe erfordern eine erneute ausdrückliche menschliche Genehmigung.
+### 2.2 Bestehende Docker-Sandbox und Docker-Agent-CLI
 
-   Insbesondere sind die lokale Modellkommunikation, funktionsfähiges Tool-Calling und die erfolgreiche Ausführung eines konkreten Einzelagentenauftrags jeweils gesondert technisch nachzuweisen. Eine erfolgreiche CLI-Aufrufbarkeit allein genügt dafür nicht.
-3. Für technische Folgearbeiten Rollengrenzen, erlaubte Pfade, Rücksetzpunkt, Schutzbereiche und tatsächliche technische Durchsetzung auftragsspezifisch nachweisen.
-4. Die Git-Strategie für den Plattform-Root separat klären. Keine automatische Initialisierung, kein Commit und keine Einbeziehung von Modellgewichten, geschützten FAS-Bereichen oder verschachtelten Repositories.
-5. Den leeren Ordner `Prompts` nur nach erneuter Pfad- und Leerheitsprüfung sowie gesonderter menschlicher Freigabe entfernen.
+- Sandbox `fas-docker-agent-test` durch `sbx exec` erfolgreich gestartet; Agenten-CLI gibt **`docker-agent version v1.142.0`**, Commit `99bdcf84c832570ebc4b37c29f58dde077dd4dcd` aus. CLI-Hilfe für `run`, einschließlich `--model`, `--dry-run`, `--exec` und `--safety`, wurde ausgegeben; noch kein erfolgreicher Docker-Agent-Modellaufruf.
+- `sbx inspect fas-docker-agent-test --json`: Agent `docker-agent`, Image `docker/sandbox-templates:docker-agent-docker`, Digest `sha256:763d685f341fc19cab53f942652ec1028b2ea07bd9861f3dbfded1515531d472`, 2 CPUs, 4 GB RAM, Netzwerk `fas-docker-agent-test`, globale Netzwerkpolicy, Proxy `172.17.0.2:3128`, `runtime_mounts: []`, 0 Sessions beim Inspektionszeitpunkt, `mcp_gateway: true`, registrierter Secret-Name `mcpgateway`, Daemon v0.48.0. Zustand `stopped` gilt nur für diesen Inspektionszeitpunkt.
+- `sbx policy ls ... --wide` zeigte allgemein geltende `filesystem:read`- und `filesystem:write`-Standardregeln für `**`. Ein leeres `runtime_mounts`-Array allein beweist nicht, dass alle sonstigen Host-/Workspace-Zugriffe unmöglich sind.
+- `docker-agent models --provider ollama --format table` meldete `No models available`; vorher wurde ein fehlgeschlagener GitHub-Self-Update-Check mit HTTP 403 ausgegeben. Das ist **kein** erfolgreicher Provider- oder Modellfunktionstest und erfordert nach aktuellem Nachweis keine zusätzliche Modellinstallation.
 
-## Unmittelbar zulässiger Arbeitsschritt
+### 2.3 Netzwerkregel und tatsächliche Sandbox-HTTP-Verbindung
 
-Die fachlich bestätigte und menschlich genehmigte Korrektur der vier Root-Dateien wird unter Beachtung der vorab verifizierten Sicherungskopien ausgeführt. Danach sind die geänderten Inhalte, die Sicherheitsvorbehalte, die neuen SHA-256-Werte und die Vorher-Nachher-Diffs technisch zu kontrollieren und der Kontrollinstanz vorzulegen. Aus diesem Änderungsauftrag ergibt sich keine Berechtigung zu Installationen, Agentenausführungen, technischen Konfigurationsänderungen oder Git-Operationen.
+- Vor der Änderung: `sbx policy check network --sandbox fas-docker-agent-test` verweigerte `host.docker.internal:11434`, `localhost:11434`, `api.openai.com:443` und `api.anthropic.com:443` (jeweils `default deny`).
+- **Richtlinienänderung (Nutzer-Konsolenausgabe):** Der Nutzer führte `sbx policy allow network --sandbox fas-docker-agent-test --protocol tcp localhost:11434` aus. Die Ausgabe bestätigte Regel-ID `8775d165-c40a-467c-a178-343f4e5471ff` mit Scope `sandbox:fas-docker-agent-test`, Protokoll TCP und Ziel `localhost:11434`. Damit ist die Einrichtung dieser Regel dokumentiert; ihre Bedeutung für einen anderen Zielnamen ist daraus allein nicht ableitbar.
+- Danach lieferte die Policy-Abfrage `Allowed` für `localhost:11434` und weiterhin `Denied` für `api.openai.com:443` und `api.anthropic.com:443`. Die beiden Cloudziel-Prüfungen allein beweisen keine allgemeine Cloud-Fallback-Sperre.
+- **Gesonderter HTTP-Befund (Nutzer-Konsolenausgabe):** Die aus `fas-docker-agent-test` abgesetzten Befehle `curl http://host.docker.internal:11434/api/tags` und `curl http://host.docker.internal:11434/v1/models` lieferten Modelllisten einschließlich Nemotron. Der erfolgreiche Zugriff auf `host.docker.internal:11434` ist damit dokumentiert. **Eine kausale Zuordnung dieses Erfolgs zur Freigaberegel für `localhost:11434` wurde nicht gesondert nachgewiesen.** Die HTTP-Abfragen waren **keine Modellinferenz durch Docker Agent**.
+- Es ist noch ungeklärt, welche weiteren Provider-/MCP-/Host-Kommunikationswege effektiv verfügbar sind und ob Cloud-Fallback bei der künftigen Agentenausführung zuverlässig technisch unterbunden ist.
 
-## Nachweise / Quellen
+## 3. Git- und Dokumentationsstand am 22.10.2026
 
-- Nutzer-PowerShell-Ausgaben zur Struktur, Dateizahl und zum Laufwerk C: am 17.10.2026.
-- `03_operations\inventory\FAS-Bestandsaufnahme.txt` (Inventar, 17.10.2026).
-- Historische Planungsgrundlagen: Dokument 001 Rev. 002, Dokument 003 Rev. 002, Master-Prompt 004 und Strukturspezifikation 005 Rev. 001; keine gegenwärtige normative Dokumentenhierarchie.
-- `00_governance\policies\01_FAS – Master-Prompt-Agententeam.md`.
-- `01_architecture\02_FAS – Zielarchitektur und technische Schutzgrenzen.md`.
-- `03_operations\runbooks\03_UMSETZUNGSPLAN.md`.
-- `00_governance\architecture_decisions\FAS-ADR-STANDORT-2026-10-17-001.md`.
-- `04_work_management\handoffs\Technischer Prüfbericht – FAS-DEV-0001.md` mit seinem tatsächlichen Nachweisumfang.
-- `12_reports\handovers\FAS-Agententeam–Korrigierte Projektstatus.md` als nicht normative Übergabe.
-- Benutzerseitige PowerShell-Prüfprotokolle zur Archivierung, Dokumentenübernahme und SHA-256-Verifikation vom 19.10.2026.
-- Prüfentscheidung 037 zur fachlichen Abnahme der Dokumentenübernahme.
+- Nutzerseitig nachgewiesener **neuer Commit** auf `main`: `2243a618866a10d8f54d0f1c6c44194f76091ab8`, Nachricht `docs: consolidate FAS document index and Git baseline references`. Ausgabe von `git diff-tree` nennt als **einzige Commit-Datei** `DOCUMENT_INDEX.md`; 66 Einfügungen und 14 Löschungen.
+- Die bereinigte Indexfassung erhielt nach gezielter Statuskorrektur laut Nutzer-PowerShell den SHA-256-Hash `7E54AFFB25220F68D9D273EAF95316C745FDD0398C19043B7C401A211F819C28`. Dieser Hash ist ein Nutzer-Messwert vor dem genannten Commit, keine Behauptung erneuter Hashverifikation am jetzigen Zeitpunkt.
+- Eine frühere, andere Indexfassung und die Sicherung `DOCUMENT_INDEX_vor_Bereinigung_20261022_224706_1112160.md` wiesen zum damaligen Prüfzeitpunkt übereinstimmend den Hash `1184D08F890AC743B3A2E3E20E24055112A9416DDBC795766A5C6875DB048824` auf. Dies beweist die Gleichheit jener beiden Dateien, **nicht** automatisch Identität mit einer externen Sollfassung oder eine Sicherung des Zustands vor Bereinigung. Ein damaliger Kopierversuch aus `Downloads` scheiterte.
+- Weitere Sicherung der Fassung vor der letzten Statuskorrektur: `C:\Users\Administrator\Documents\FAS_Backups\DOCUMENT_INDEX_vor_Statuskorrektur_20261022_230035_6321044.md` (Erstellung laut PowerShell-Ausgabe; Sicherungsinhalt hier nicht unabhängig gelesen).
+- Die **letzte übermittelte Git-Statusausgabe nach dem Commit** zeigte ausschließlich ` M PROJECT_STATUS.md`. Diese Datei wurde ausdrücklich nicht in den Index-Commit aufgenommen. Ein Git-Commit der vorliegenden Projektstatus-Prüffassung ist **nicht** erfolgt.
+- Der technische Übergabebericht vom 22.10.2026 wurde vom Nutzer unter dem temporären Bereich `Prompts` gesichert (genaue aktuelle Benennung siehe lokale Datei). `git check-ignore -v -- Prompts/` zeigte `.gitignore:7:*`; der Bereich ist damit bei diesem Test vom Root-Repository ignoriert. Die Übergabe ist ein nicht normativer Beleg, kein weiterer führender Projektstatus.
+
+## 4. Abgrenzung und offene Abnahmekriterien
+
+**Bereits belegt:** Direkte lokale Ollama-Modellinferenz; Sandbox-CLI-Aufrufbarkeit; gezielte Ollama-Portfreigabe; erfolgreiche HTTP-Erreichbarkeit der nativen und OpenAI-kompatiblen Ollama-Modelllisten aus der Sandbox; nachvollziehbarer separater Git-Commit des Dokumentenindex.
+
+**Nicht nachgewiesen bzw. nicht abgenommen:**
+
+1. Ob die vorgeschlagene Docker-Agent-YAML für **v1.142.0** tatsächlich gültig ist; der bisher diskutierte Inhalt ist ein **ungetesteter Entwurf**, keine aktivierte Konfiguration.
+2. Erfolgreiche Nemotron-Inferenz **durch Docker Agent** mit ausdrücklich festgelegtem lokalen Provider und wirksamer Cloud-Fallback-Sperre.
+3. Für Toolaufrufe: technisch belegte Werkzeug-/Dateisystem-/Mount-/MCP-/Netzwerk-Isolation, Rechte, Stop-/Rollback-Möglichkeit und zulässige Testpfade; die Default-Dateisystemregeln sind allein nicht ausreichend.
+4. Reproduzierbares Tool-Calling und ein begrenzter, genehmigter, erfolgreich dokumentierter Einzelagentenauftrag (Abnahmekriterien der Phase 2).
+5. Spätere unabhängige Qualitätssicherung, Audit-/Backup-/Restore-Abnahme und dauerhafter Betrieb (nachgeordnet gemäß Phasen 3–6).
+
+## 5. Unmittelbare Fortsetzung
+
+1. Diese Projektstatus-Prüffassung fachlich kontrollieren; erst nach ausdrücklicher menschlicher Autorisierung in `PROJECT_STATUS.md` übernehmen. Sie ersetzt die vorhandene Arbeitsfassung nicht automatisch.
+2. Nach erlaubter Übernahme: ausschließlich tatsächlichen Inhalt, Git-Diff/Staging und Nachweisreferenzen kontrollieren. Ein Git-Commit erfordert eine **eigene** ausdrückliche Autorisierung; keine starre Verpflichtung zu zwei Commits.
+3. Technisch in Phase 2 weiterarbeiten: Den minimalen **werkzeuglosen** Docker-Agent-Konfigurationsentwurf für den bestehenden Ollama-Endpunkt zunächst auf Eignung für v1.142.0 und auf mögliche Nebenwirkungen der vorgesehenen Prüfbefehle untersuchen. Ein `--dry-run` ist **lediglich ein geplanter, noch nicht ausgeführter Prüfschritt**; sein tatsächliches Verhalten und seine Nebenwirkungsfreiheit sind nicht nachgewiesen. Seine Ausführung sowie anschließende Modellinferenz erfolgen erst im konkret geklärten und menschlich autorisierten Umfang. Vor ausführenden Agenten-Toolaufrufen die in Abschnitt 4 genannten Schutzgrenzen wirksam nachweisen und autorisieren.
+4. Keine unnötigen Wiederholungsinventuren, weiteren Modellinstallationen oder Eingriffe in FAS-Originale beziehungsweise FAS-GIT-001.
+
+## 6. Nachweise / Fundstellen
+
+- Normative Quellen: `00_governance\policies\01_FAS – Master-Prompt-Agententeam.md`; `01_architecture\02_FAS – Zielarchitektur und technische Schutzgrenzen.md`; `03_operations\runbooks\03_UMSETZUNGSPLAN.md`.
+- Historische Belege: `03_operations\inventory\FAS-Bestandsaufnahme.txt`, `03_operations\inventory\FAS_Phase2_Technische_Ausgangslage.md`, Abschlussbericht 067, Prüfentscheidungen 037/068 und ältere Nutzer-PowerShell-Ausgaben (insbesondere Prüfungen 002–010). Angaben aus Prüfblock 015 ausdrücklich nur sekundär überliefert.
+- Nutzer-PowerShell-Ausgaben in der Unterhaltung vom 22.10.2026: `ollama list`, `/api/tags`, `/api/generate`, `ollama ps`, `sbx exec`, `sbx inspect --json`, `sbx policy ls/check/allow`, `curl /api/tags`, `curl /v1/models`, `docker-agent version/run --help/models`, Git-Diffs, Hashwerte und abschließende Commit-/Statusausgabe.
+- Technischer Übergabebericht vom 22.10.2026 im temporären `Prompts`-Bereich; nicht normativ. Bei Abweichungen gehen konkrete zeitlich zugeordnete Konsolennachweise und die jeweiligen normativen Quellen vor.
+
+**Bearbeitungsvermerk:** Diese Fassung wurde außerhalb des Windows-Entwicklungs-PCs als redaktioneller Prüfvorschlag erstellt. Sie enthält keine behauptete erneute Hostmessung, keine neue technische Abnahme und keine Schreib- oder Commit-Freigabe.
