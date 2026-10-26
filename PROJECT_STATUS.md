@@ -1,8 +1,8 @@
 # FAS-Agententeam-Plattform – Projektstatus
 
-**Dokumentstatus:** Nicht normative, konsolidierte **Prüffassung** vom 22.10.2026. Noch keine unabhängige Abschlussprüfung dieser Fassung und keine menschliche Freigabe zur Übernahme oder Git-Versionierung. Keine allgemeine Betriebs-, Schreib- oder Agentenausführungsfreigabe.
+**Dokumentstatus:** Führende, nicht normative Projektstatus-Momentaufnahme; Fortschreibung als **Übernahme-/Commit-Prüffassung vom 26.10.2026**. Die Fassung vom 22.10.2026 wurde laut vom Nutzer übermittelter abschließender Kontrollentscheidung fachlich als **FREIGABEFÄHIG** bewertet; dies war keine technische Reproduktion und keine automatische menschliche Übernahme- oder Git-Freigabe. Die drei Korrekturen der Fortschreibung vom 26.10.2026 wurden laut übermittelter abschließender Kontrollentscheidung fachlich als FREIGABEFÄHIG bewertet; weitere inhaltliche Korrekturen wurden nicht verlangt. Eine unabhängige technische Reproduktion war damit nicht verbunden. Der Nutzer hat die Aktualisierung und anschließende Versionierung am 26.10.2026 ausdrücklich beauftragt. Keine Agenten-, Betriebs- oder sonstige technische Ausführungsfreigabe.
 
-**Berichtsstand:** 22.10.2026. Historische Prüfungen behalten ihren jeweiligen Zeitpunkt und ihre Nachweisgrenzen. **Aktuelle Projektphase:** 2 – Einzelagent (noch nicht abgenommen).
+**Berichtsstand:** 26.10.2026 (Ergänzungen aus Nutzer-Konsolenausgaben dieses Tages). Historische Prüfungen behalten ihre jeweiligen Zeitpunkte und Nachweisgrenzen. **Aktuelle Projektphase:** 2 – Einzelagent (noch nicht abgenommen).
 
 **Plattform-Root:** `C:\FAS-Agententeam_Plattform\` (Standortentscheidung des Nutzers vom 17.10.2026). Die drei normativen Quellen bleiben allein für KI-Verhalten, Zielarchitektur und Umsetzungsreihenfolge zuständig; dieser Statusbericht ersetzt keine von ihnen.
 
@@ -45,7 +45,31 @@ Die folgenden Befunde stammen aus in der Unterhaltung übermittelten PowerShell-
 - **Gesonderter HTTP-Befund (Nutzer-Konsolenausgabe):** Die aus `fas-docker-agent-test` abgesetzten Befehle `curl http://host.docker.internal:11434/api/tags` und `curl http://host.docker.internal:11434/v1/models` lieferten Modelllisten einschließlich Nemotron. Der erfolgreiche Zugriff auf `host.docker.internal:11434` ist damit dokumentiert. **Eine kausale Zuordnung dieses Erfolgs zur Freigaberegel für `localhost:11434` wurde nicht gesondert nachgewiesen.** Die HTTP-Abfragen waren **keine Modellinferenz durch Docker Agent**.
 - Es ist noch ungeklärt, welche weiteren Provider-/MCP-/Host-Kommunikationswege effektiv verfügbar sind und ob Cloud-Fallback bei der künftigen Agentenausführung zuverlässig technisch unterbunden ist.
 
-## 3. Git- und Dokumentationsstand am 22.10.2026
+## 3. Technische Nutzer-Nachweise vom 26.10.2026
+
+Die folgenden Befunde stammen aus vom Nutzer übermittelten PowerShell-Ausgaben. Sie sind **Nutzer-Konsolennachweise**, keine unabhängige Host-Reproduktion. Die Befehle wurden aus `C:\FAS-Agententeam_Plattform` aufgerufen, soweit der jeweilige Konsolen-Prompt sichtbar war. `sbx exec` startete die Sandbox bei mehreren Aufrufen. Keine Agenten-Modellinferenz, kein Tool-Calling, keine Installation und keine absichtliche Konfigurationsänderung sind für diese Prüfungen belegt.
+
+| Prüfung | Befehl / Kernbefund |
+|---|---|
+| A | `sbx exec fas-docker-agent-test docker-agent run --help`: Dateikonfiguration als Argument, `--dry-run`, `--exec`, `--model`, `--no-kit`, `--safety`, `--working-dir` verfügbar. Nur Hilfeausgabe, keine Funktions-/Nebenwirkungsprüfung. |
+| B | `sbx exec fas-docker-agent-test pwd`: `/home/agent/workspace`. |
+| C | `sbx policy ls fas-docker-agent-test --wide`: globale Regeln `filesystem:read ** allow` und `filesystem:write ** allow`; zusätzliche sandboxbezogene Netzwerkfreigabe TCP `localhost:11434`, Regel-ID `8775d165-c40a-467c-a178-343f4e5471ff`. |
+| D | `sbx inspect fas-docker-agent-test --json`: `state=stopped` zum Inspektionszeitpunkt; Agent `docker-agent`; Image `docker/sandbox-templates:docker-agent-docker`; Digest `sha256:763d685f341fc19cab53f942652ec1028b2ea07bd9861f3dbfded1515531d472`; 2 CPUs, 4g RAM; `network_policy.scope=sandbox`; Proxy `172.17.0.2:3128`; `runtime_mounts=[]`, `sessions=0`, `kits=[]`, `mcp_gateway=true`, Secret-Metadatum `mcpgateway` (Quelle `uploaded`), Daemon v0.48.0. Die ältere Inspektion vom 22.10. meldete für `network_policy.scope` noch `global`; Grund der Differenz ungeklärt. |
+| E | `sbx exec fas-docker-agent-test cat /proc/self/mountinfo`: `/` OverlayFS (`rw`); `/var/lib/docker` als `/dev/vdd`, ext4 (`rw`); `/run/secrets` tmpfs (`rw`); `/etc/resolv.conf` virtiofs (`ro`). Kein separater Mountpoint `/home/agent/workspace` in der Ausgabe. |
+| F | `sbx exec fas-docker-agent-test df -T /var/lib/docker`: `/dev/vdd`, ext4, 10.218.772 KiB gesamt, 2.388 KiB belegt, 9.675.712 KiB verfügbar, 1 %. |
+| G | `sbx exec fas-docker-agent-test ls -ld /home/agent/workspace /mnt /host /var/run/docker.sock`: Workspace `agent:agent`, `drwxr-xr-x`; `/mnt` `root:root`, `drwxr-xr-x`; `/host` nicht vorhanden; Docker-Socket `root:docker`, `srw-rw----`. |
+| H | `sbx exec fas-docker-agent-test id`: `uid=1000(agent)`, `gid=1000(agent)`, Zusatzgruppen `27(sudo)` und `1001(docker)`. |
+| I | `sbx exec fas-docker-agent-test readlink -f /var/run/docker.sock`: `/run/docker.sock`. |
+| J | `sbx exec fas-docker-agent-test curl --silent --show-error --max-time 5 --unix-socket /run/docker.sock http://localhost/_ping`: `OK`. Docker-API-Socket für den Sandbox-Prozess tatsächlich erreichbar. |
+| K | Dieselbe Docker-Socket-Abfrage gegen `http://localhost/info`: Daemon-ID `babce403-dac8-48f0-a111-fad9c32e9558`; Name `fas-docker-agent-test`; Server `29.8.1`; OS `Ubuntu 26.04.1 LTS (containerized)` / Linux x86_64; DockerRootDir `/var/lib/docker`; 0 Container und 0 Images; 2 CPUs, 4.193.071.104 Bytes RAM; `SecurityOptions=[name=seccomp,profile=builtin; name=cgroupns]`; HTTP-/HTTPS-Proxy `http://gateway.docker.internal:3128`. Die gemeldeten Daemon-Eigenschaften (`Name=fas-docker-agent-test`, containerisiertes Linux, `DockerRootDir=/var/lib/docker`) sind mit einem Sandbox-eigenen Docker-Daemon vereinbar. Die tatsächliche technische Trennung vom Windows-Host und von übergeordneten Docker-Ressourcen wurde nicht unabhängig nachgewiesen. Aus diesen Eigenschaften darf keine vollständige Host-Isolation abgeleitet werden. |
+| L | `sbx mcp ls`: `No MCP servers registered`. Kein Beweis, dass integrierte Tools oder Gateway-Zugriffe deaktiviert sind. |
+| M | `sbx exec fas-docker-agent-test docker-agent config --help`: `unknown command "config" for "docker-agent"`. |
+| N | `sbx exec fas-docker-agent-test docker-agent debug --help`: `debug` verfügbar, Unterbefehle `auth`, `config`, `oauth`, `skills`, `title`, `toolsets`. |
+| O | `sbx exec fas-docker-agent-test docker-agent debug config --help`: Sandbox gestartet; Unterbefehl verfügbar. Syntax: `docker-agent debug config <agent-file>\|<registry-ref> [flavor...] [flags]`. Gibt die kanonische Konfiguration aus; `flavors` werden angewendet. Globale Optionen u. a. `--config-dir`, `--data-dir`, `--cache-dir`, `--env-from-file`, `--flavor`, `--models-gateway`, `--working-dir`. Zusammenfassung des vollständig übermittelten CLI-Hilfetextes; keine YAML validiert. |
+
+**Sicherheitsrelevanter Gesamtbefund vom 26.10.:** Die effektive Docker-API-Erreichbarkeit über `/run/docker.sock` ist dokumentiert; `agent` gehört zur Socket-Gruppe `docker`. Der Daemon meldet den Sandbox-Namen und ein internes DockerRootDir. Die allgemeinen `read/write **`-Regeln, `mcp_gateway=true`, die vorhandene Secret-Metadatenreferenz und die Netzwerk-/Cloud-Wege sind für einen ausführenden Agenten noch nicht abschließend abgesichert. Das Fehlen von `/host` und `runtime_mounts=[]` sind keine vollständigen Hostzugriffs-Negativnachweise. Kein Sicherheits-Gesamtabnahmeanspruch.
+
+## 4. Git- und Dokumentationsstand am 22.10.2026
 
 - Nutzerseitig nachgewiesener **neuer Commit** auf `main`: `2243a618866a10d8f54d0f1c6c44194f76091ab8`, Nachricht `docs: consolidate FAS document index and Git baseline references`. Ausgabe von `git diff-tree` nennt als **einzige Commit-Datei** `DOCUMENT_INDEX.md`; 66 Einfügungen und 14 Löschungen.
 - Die bereinigte Indexfassung erhielt nach gezielter Statuskorrektur laut Nutzer-PowerShell den SHA-256-Hash `7E54AFFB25220F68D9D273EAF95316C745FDD0398C19043B7C401A211F819C28`. Dieser Hash ist ein Nutzer-Messwert vor dem genannten Commit, keine Behauptung erneuter Hashverifikation am jetzigen Zeitpunkt.
@@ -54,7 +78,7 @@ Die folgenden Befunde stammen aus in der Unterhaltung übermittelten PowerShell-
 - Die **letzte übermittelte Git-Statusausgabe nach dem Commit** zeigte ausschließlich ` M PROJECT_STATUS.md`. Diese Datei wurde ausdrücklich nicht in den Index-Commit aufgenommen. Ein Git-Commit der vorliegenden Projektstatus-Prüffassung ist **nicht** erfolgt.
 - Der technische Übergabebericht vom 22.10.2026 wurde vom Nutzer unter dem temporären Bereich `Prompts` gesichert (genaue aktuelle Benennung siehe lokale Datei). `git check-ignore -v -- Prompts/` zeigte `.gitignore:7:*`; der Bereich ist damit bei diesem Test vom Root-Repository ignoriert. Die Übergabe ist ein nicht normativer Beleg, kein weiterer führender Projektstatus.
 
-## 4. Abgrenzung und offene Abnahmekriterien
+## 5. Abgrenzung und offene Abnahmekriterien
 
 **Bereits belegt:** Direkte lokale Ollama-Modellinferenz; Sandbox-CLI-Aufrufbarkeit; gezielte Ollama-Portfreigabe; erfolgreiche HTTP-Erreichbarkeit der nativen und OpenAI-kompatiblen Ollama-Modelllisten aus der Sandbox; nachvollziehbarer separater Git-Commit des Dokumentenindex.
 
@@ -66,18 +90,19 @@ Die folgenden Befunde stammen aus in der Unterhaltung übermittelten PowerShell-
 4. Reproduzierbares Tool-Calling und ein begrenzter, genehmigter, erfolgreich dokumentierter Einzelagentenauftrag (Abnahmekriterien der Phase 2).
 5. Spätere unabhängige Qualitätssicherung, Audit-/Backup-/Restore-Abnahme und dauerhafter Betrieb (nachgeordnet gemäß Phasen 3–6).
 
-## 5. Unmittelbare Fortsetzung
+## 6. Unmittelbare Fortsetzung
 
-1. Diese Projektstatus-Prüffassung fachlich kontrollieren; erst nach ausdrücklicher menschlicher Autorisierung in `PROJECT_STATUS.md` übernehmen. Sie ersetzt die vorhandene Arbeitsfassung nicht automatisch.
-2. Nach erlaubter Übernahme: ausschließlich tatsächlichen Inhalt, Git-Diff/Staging und Nachweisreferenzen kontrollieren. Ein Git-Commit erfordert eine **eigene** ausdrückliche Autorisierung; keine starre Verpflichtung zu zwei Commits.
-3. Technisch in Phase 2 weiterarbeiten: Den minimalen **werkzeuglosen** Docker-Agent-Konfigurationsentwurf für den bestehenden Ollama-Endpunkt zunächst auf Eignung für v1.142.0 und auf mögliche Nebenwirkungen der vorgesehenen Prüfbefehle untersuchen. Ein `--dry-run` ist **lediglich ein geplanter, noch nicht ausgeführter Prüfschritt**; sein tatsächliches Verhalten und seine Nebenwirkungsfreiheit sind nicht nachgewiesen. Seine Ausführung sowie anschließende Modellinferenz erfolgen erst im konkret geklärten und menschlich autorisierten Umfang. Vor ausführenden Agenten-Toolaufrufen die in Abschnitt 4 genannten Schutzgrenzen wirksam nachweisen und autorisieren.
-4. Keine unnötigen Wiederholungsinventuren, weiteren Modellinstallationen oder Eingriffe in FAS-Originale beziehungsweise FAS-GIT-001.
+1. Diese aktualisierte Prüffassung gegen die tatsächlich gespeicherte `PROJECT_STATUS.md` kontrollieren, ohne ältere Abschnitte oder fremde Änderungen ungeprüft zu überschreiben. Der Nutzer hat die Statusaktualisierung und anschließende Git-Versionierung am 26.10.2026 beauftragt. Vor dem Commit tatsächliche Dateiinhalte, Git-Diff, Staging und Kollisionsfreiheit gezielt prüfen; nur ausdrücklich bestimmte Dateien committen. Eine Durchführung oder Commit-ID ist noch nicht nachgewiesen.
+2. Danach in Phase 2 eine separate minimale, werkzeuglose Ollama-/Nemotron-YAML in einem autorisierten isolierten Testbereich vorbereiten. `docker-agent debug config <agent-file>` ist als Prüffunktion vorhanden, wurde aber noch nicht mit der YAML ausgeführt; mögliche Nebenwirkungen weiterhin beachten.
+3. **Schutzvoraussetzungen nach Ausführungsart:** Bereits vor einem werkzeuglosen Docker-Agent-Modelltest sind der konkrete Testumfang, die ausdrückliche menschliche Ausführungsautorisierung, der lokale Modellprovider, die wirksame Cloud-Fallback-Sperre, geeignete Netzwerk-/Credential-Grenzen, Ressourcenlimits und die Abbruchmöglichkeit zu klären und technisch abzusichern. Vor späteren ausführenden Agenten-Toolaufrufen sind zusätzlich die effektiven Werkzeug-, Dateisystem-, Docker-Socket-, Mount- und MCP-/Gateway-Berechtigungen, zulässige Testpfade sowie Stop-/Rollback-Möglichkeiten wirksam nachzuweisen. Die bisherigen CLI-Prüfungen ersetzen keine dieser Voraussetzungen. FAS-Originale und FAS-GIT-001 bleiben geschützt.
 
-## 6. Nachweise / Fundstellen
+## 7. Nachweise / Fundstellen
 
 - Normative Quellen: `00_governance\policies\01_FAS – Master-Prompt-Agententeam.md`; `01_architecture\02_FAS – Zielarchitektur und technische Schutzgrenzen.md`; `03_operations\runbooks\03_UMSETZUNGSPLAN.md`.
 - Historische Belege: `03_operations\inventory\FAS-Bestandsaufnahme.txt`, `03_operations\inventory\FAS_Phase2_Technische_Ausgangslage.md`, Abschlussbericht 067, Prüfentscheidungen 037/068 und ältere Nutzer-PowerShell-Ausgaben (insbesondere Prüfungen 002–010). Angaben aus Prüfblock 015 ausdrücklich nur sekundär überliefert.
 - Nutzer-PowerShell-Ausgaben in der Unterhaltung vom 22.10.2026: `ollama list`, `/api/tags`, `/api/generate`, `ollama ps`, `sbx exec`, `sbx inspect --json`, `sbx policy ls/check/allow`, `curl /api/tags`, `curl /v1/models`, `docker-agent version/run --help/models`, Git-Diffs, Hashwerte und abschließende Commit-/Statusausgabe.
 - Technischer Übergabebericht vom 22.10.2026 im temporären `Prompts`-Bereich; nicht normativ. Bei Abweichungen gehen konkrete zeitlich zugeordnete Konsolennachweise und die jeweiligen normativen Quellen vor.
+- Nutzer-PowerShell-Ausgaben vom 26.10.2026: Prüfungen A–O in Abschnitt 3, einschließlich `/proc/self/mountinfo`, Docker-API `_ping`/`info`, `sbx inspect`, `sbx mcp ls` und CLI-Diagnosehilfe. Das kompakte Prüfprotokoll vom 26.10.2026 dokumentiert zumindest die früheren Prüfungen; dessen tatsächliche lokale Vollständigkeit und aktueller Ablageort sind nicht unabhängig bestätigt.
+- Abschließende Kontrollentscheidung zur Projektstatus-Prüffassung vom 22.10.2026: laut Nutzertext `FREIGABEFÄHIG`; keine technische Reproduktion und keine menschliche Dateiübernahme durch die Kontrollinstanz.
 
-**Bearbeitungsvermerk:** Diese Fassung wurde außerhalb des Windows-Entwicklungs-PCs als redaktioneller Prüfvorschlag erstellt. Sie enthält keine behauptete erneute Hostmessung, keine neue technische Abnahme und keine Schreib- oder Commit-Freigabe.
+**Bearbeitungsvermerk:** Diese Fortschreibung wurde außerhalb des Windows-Entwicklungs-PCs aus übermittelten Konsolenausgaben erstellt. Keine erneute Hostmessung durch den Verfasser, kein lokales Speichern/Ersetzen und kein Git-Commit durch den Verfasser; die Aktualisierung und Versionierung wurden vom Nutzer ausdrücklich angefordert. Keine technische Agenten-/Betriebsabnahme.
