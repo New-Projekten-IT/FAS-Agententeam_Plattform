@@ -1,105 +1,174 @@
-# FAS-Agententeam-Plattform – Projektstatus
+# FAS-Agententeam-Plattform – PROJECT_STATUS
 
-Stand: 29.10.2026 · Entwicklungs-PC · Abschluss der heutigen Arbeitssitzung
-
-&#x20;VS-Code-Vorbereitung erfolgreich
+**Stand:** 30.10.2026  
+**Projektphase:** Phase 2 – Einzelagent  
+**Abnahmestatus:** Nicht abgenommen  
+**Aktueller Schwerpunkt:** Sichere Docker-Agent-Werkzeugausführung ohne unkontrollierten MCP-Gateway-Zugriff
 
 ## 1. Gesamtstatus
 
-Die praktische Einrichtung des lokalen VS-Code-Analysearbeitswegs ist deutlich vorangekommen. Der separate Workspace ist eingerichtet, Codex funktioniert mit einem lokalen Ollama-Modell und ein konkreter Schreibschutztest wurde erfolgreich durchgeführt.
+Die lokale Modellanbindung und die Konfiguration des ersten Docker-Agent-Werkzeugs funktionieren. Der tatsächliche Werkzeugaufruf wurde noch nicht durchgeführt.
 
-Die FAS-Plattform befindet sich weiterhin in Phase 2 – Einzelagent (nicht abgenommen).
+Das bisherige zentrale Hindernis ist die nicht ausreichend begrenzte MCP-Gateway-Erreichbarkeit innerhalb von Docker Sandboxes.
 
-| Projektbereich                              | Aktueller Status                                                                                        |
-| ------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| Drei FAS-Grundlagendokumente vom 29.10.2026 | Fachliche Grundlage; autorisierte Übernahme in die geschützten Originalbereiche noch nicht nachgewiesen |
-| V2-Transferpaket                            | 11 Dateien vorhanden und in Analyse-Workspace kopiert                                                   |
-| VS-Code-Analyse-Workspace                   | Eingerichtet und erfolgreich geöffnet                                                                   |
-| Lokale Modellversorgung                     | Ollama und LM Studio verfügbar                                                                          |
-| Codex mit GPT-OSS 20B                       | Erfolgreiche lokale Modellinferenz                                                                      |
-| Codex mit Qwen3.8-27B                       | Modellanfrage wegen Chat-Template-Fehler fehlgeschlagen                                                 |
-| Codex-Schreibschutz                         | Konkrete Schreibversuche technisch blockiert                                                            |
-| MCP-/Werkzeugisolation                      | Noch nicht vollständig geklärt                                                                          |
-| `FAS-P2-GATEWAY-001`                        | Technische Untersuchung durch Analyseagenten steht noch aus                                             |
-| Docker-Agent-Tool-Calling                   | Weiterhin nicht freigegeben oder durchgeführt                                                           |
+Die Gateway-Ursache wurde durch konkrete Netzwerk- und Proxy-Prüfungen eingegrenzt. Ein externer Coding-Agent hat einen alternativen Ausführungsweg vorgeschlagen, der nun auf technische Umsetzbarkeit und Sicherheit geprüft werden soll.
 
-## 2. Wesentliche Ergebnisse vom 29.10.2026
+**Phase 2 bleibt nicht abgenommen.**
 
-### VS Code und Transferpaket
+## 2. Technischer Entwicklungsstand
 
-- VS Code `1.143.1` vorhanden.
-- Codex CLI `0.162.1` vorhanden.
-- Cline `4.1.26` installiert, bisher nicht erneut getestet.
-- Continue nicht installiert.
-- V2-Transferpaket unter `D:\FAS-Agententeam_Plattform\Prompts\FAS Phase 2 – Transferordner VS Code-Dateien\v2` vorhanden.
-- Alle elf Dateien nach `C:\FAS-VSCode-Analyse` kopiert.
-- Dateianzahl und relative Pfade stimmen überein.
-- Workspace in VS Code erfolgreich geöffnet.
+| Projektbereich | Aktueller Status |
+|---|---|
+| Docker Agent | v1.142.0, lokale Modellinferenz erfolgreich |
+| Docker Sandboxes | v0.48.0 |
+| Ollama | Lokale Modellversorgung funktionsfähig |
+| Agentenkonfiguration | YAML-Schema 16 erfolgreich validiert |
+| Erstes Werkzeug | `get_environment_info` erfolgreich konfiguriert |
+| Werkzeugliste | Genau ein Werkzeug durch `debug toolsets --json` bestätigt |
+| Echter Werkzeugaufruf | Noch nicht durchgeführt |
+| MCP-Gateway | Aktiviert, nicht ausreichend isoliert |
+| Netzwerkpolicy | Gateway-Adressen explizit gesperrt; Ollama erlaubt |
+| Gateway-Proxy | Trotz Sperren über daemonverwalteten Alias erreichbar |
+| Dateisystemschutz | Vollständige Isolation nicht nachgewiesen |
+| Docker-Socket | Einzelne Schutztests erfolgreich, Gesamtschutz offen |
+| Credential-Isolation | Nicht vollständig nachgewiesen |
+| VS-Code-Analyseumgebung | Eingerichtet und funktionsfähig |
+| Codex-Sicherheitsprüfung | Konkrete Schreib- und Shell-Versuche technisch blockiert |
+| Geschützte FAS-Originale | Keine unautorisierten Änderungen dokumentiert |
 
-### Lokale Modelle
+## 3. Aktuelle Konfiguration
 
-Ollama: Nemotron 3.5 Lightning 30B, GLM 4.7 Flash, GPT-OSS 20B 32K und GPT-OSS 20B.
+**Entwicklungs-PC:**
 
-LM Studio: Qwen3.8-27B, Nemotron 3.5 Super VL 120B A12B sowie Nomic Embedding.
-
-Qwen wurde erfolgreich geladen und die LM-Studio-API auf Port 1234 gestartet. Die Codex-Anfrage scheiterte jedoch mit `HTTP 500` und `Jinja Exception: System message must be at the beginning`.
-
-Dagegen lieferte Codex mit `gpt-oss-20b-32k:latest` über Ollama erfolgreich:
-
-`FAS_CODEX_MODELL_OK`
-
-Der Test endete mit `CODEX_EXITCODE=0`.
-
-### Sicherheitsprüfungen
-
-Der Testagent verwendete:
-
-- `sandbox: read-only`
-- `approval: never`
-- `--ignore-user-config`
-- `--ephemeral`
-- das separate `CODEX_HOME` unter `C:\FAS-Codex-TestHome`
-
-Beim konkreten Schreibschutztest wurde eine angeforderte Berechtigungserweiterung zurückgewiesen. Auch der anschließende Shell-Schreibversuch wurde mit `blocked by policy` verhindert.
-
-Die Testdatei `C:\FAS-VSCode-Analyse\FAS_SANDBOX_SCHREIBTEST.txt` enthielt anschließend unverändert:
-
-`ORIGINAL_UNVERAENDERT`
-
-Nachweisgrenze: Die technisch wirksame Blockierung dieser konkreten Schreibversuche ist dokumentiert. Eine vollständige Dateisystem-, MCP-, Netzwerk- oder Agentenisolation ist damit nicht nachgewiesen.
-
-## 3. Offene Arbeiten
-
-1. Effektiv verfügbare MCP- und sonstige Codex-Agentenwerkzeuge in der getrennten Testumgebung feststellen.
-2. Zulässige lesende Dateizugriffe und deren technische Begrenzung gezielt überprüfen.
-3. Den Analyseagenten mit den V2-Unterlagen auf `FAS-P2-GATEWAY-001` ansetzen.
-4. Einen konkreten Lösungsweg für die Docker-Agent-Gateway-/Tool-Isolation erarbeiten.
-5. Erst nach wirksamen technischen Schutzgrenzen den späteren Docker-Agent-Werkzeugtest vorbereiten.
-
-Die bisherigen abgeschlossenen Prüfungen werden nicht ohne neuen sachlichen Anlass wiederholt.
-
-## 4. Startpunkt für die nächste Sitzung
-
-Nächster Arbeitsschritt – Schritt 20
-
-Die tatsächliche MCP- und Werkzeugverfügbarkeit des getrennten Codex-Analyseagenten gezielt feststellen.
-
-Dabei beibehalten:
-
-- Workspace: `C:\FAS-VSCode-Analyse`
+- FAS-Plattform: `C:\FAS-Agententeam_Plattform`
+- Analyse-Workspace: `C:\FAS-VSCode-Analyse`
 - Codex-Testumgebung: `C:\FAS-Codex-TestHome`
-- Modell: `gpt-oss-20b-32k:latest` über Ollama
-- Sicherheitsparameter: `read-only`, `approval: never`
-- Keine Änderungen an geschützten FAS-Bereichen
 
-PowerShell-Prüfungen möglichst sinnvoll bündeln. Zustandsändernde Schritte einzeln durchführen und anhand der Nutzer-Ausgabe kontrollieren.
+**Docker-Sandbox:**
 
-## 5. Dokumentations- und Übergabestatus
+- Name: `fas-docker-agent-test`
+- Ressourcen: historisch 2 CPUs und 4 GB RAM
+- MCP-Gateway: `true`
+- Gateway-Secret: `mcpgateway`, Quelle `uploaded`
+- Netzwerkpolicy: `sandbox`
+- Runtime-Mounts: keine ausgewiesen
 
-Die technischen Kurzberichte zu den Schritten 12–16b und 17b–19b wurden in der Unterhaltung erstellt.
+**Agenten-Testkonfiguration:**
 
-Dieser Projektstatus ist eine operative Momentaufnahme und keine Änderung der normativen FAS-Dokumente. Er wurde noch nicht in die lokale `PROJECT_STATUS.md` übernommen und nicht durch einen neuen Git-Commit versioniert. Die heute auf dem Alltags-PC bereits erfolgte Statusversionierung bleibt davon unberührt.
+- Hostkopie: `C:\FAS-VSCode-Analyse\fas_environment_test.yaml`
+- Sandbox-Kopie: `/home/agent/workspace/fas_environment_test.yaml`
+- Modell: `nemotron-3.5-lightning:30b`
+- Provider: Ollama
+- Modellendpunkt: `http://host.docker.internal:11434/v1`
+- Toolset: `environment`
+- Aufgelöstes Werkzeug: ausschließlich `get_environment_info`
 
-Abschlussbewertung: Der heutige Fortschritt ist technisch nachvollziehbar. Die lokale Codex-Modellkommunikation funktioniert, der separate Analyse-Workspace ist einsatzbereit und ein konkreter Shell-Schreibzugriff wurde nachweislich blockiert. Die eigentliche Gateway-Analyse ist der nächste Schwerpunkt.
+Die ursprüngliche Modelltest-Konfiguration `fas_nemotron_minimal.yaml` bleibt separat vorhanden.
 
-Damit haben wir einen klaren Wiederaufnahmepunkt für die nächste Sitzung.
+## 4. Wesentliche Sicherheitsbefunde
+
+### MCP-Gateway und Proxy
+
+Für folgende Adressen wurden explizite Sandbox-Netzwerksperren eingerichtet:
+
+- `mcp-gateway.docker.internal`
+- `gateway.docker.internal`
+
+Die Policy-Prüfung bestätigte für beide die Verweigerung.
+
+Tatsächliche HTTP-Tests lieferten dennoch HTTP 400.
+
+Das Netzwerkprotokoll bestätigte einen zugelassenen Zugriff:
+
+```text
+host:       mcp-gateway.docker.internal:80
+proxy_type: forward
+rule:       <daemon-managed alias>
+count:      2
+```
+
+Ein anderer DNS-Zugriffsweg wurde durch die Proxy-Policy blockiert.
+
+**Bewertung:** Die bisherigen Gateway-Sperren erfassen den daemonverwalteten Kommunikationsweg nicht ausreichend. Die vollständige interne Ursache ist noch ungeklärt.
+
+Die HTTP-Antwort belegt keine erfolgreiche MCP-Sitzung.
+
+### Sonstige Sicherheitsgrenzen
+
+Die allgemeine Sandbox-Dateisystempolicy enthält weiterhin `filesystem:read **` und `filesystem:write **`.
+
+Die frühere Überdeckung von `/run/docker.sock` war in begrenzten Einzeltests erfolgreich, aber nicht als durchgängige Schutzgrenze für den ausführenden Agenten nachgewiesen.
+
+Lokale Ollama-Endpunkte sind durch die Netzwerkpolicy erlaubt. Eine vollständige Cloud-Fallback- und Credential-Isolation ist noch offen.
+
+## 5. Externe Coding-Agent-Prüfungen
+
+### Gesamtprüfung Phase 2
+
+Der externe Coding-Agent bestätigte die grundsätzliche Eignung des bisherigen Entwicklungsansatzes, wies aber auf die fehlenden technischen Sicherheitsnachweise hin.
+
+Seine Aufwandsschätzung von 10–23 Stunden ist eine unverbindliche Planungsannahme. Sie stellt keine Mindestdauer dar.
+
+### Einzelauftrag 1 – Gateway-Isolation
+
+**Ergebnis:** Docker Sandboxes stellt standardmäßig einen MCP-Gateway bereit.
+
+`--static-mcp` beschränkt die dynamische MCP-Serverauswahl, deaktiviert aber den Gateway nicht.
+
+Eine wirksame vollständige Gateway-Abschaltung für Docker Sandboxes v0.48.0 wurde nicht nachgewiesen.
+
+**Technischer Lösungsvorschlag:** Docker Agent ohne die bisherige Sandbox-Gateway-Integration betreiben und ausschließlich das eingebaute `environment`-Toolset verwenden.
+
+### Sicherheitsbewertung des Lösungsvorschlags
+
+Ein direkter Docker-Agent-Start auf Windows ohne zusätzliche Isolation ist nicht ausreichend abgesichert.
+
+Daher wurde ein zweiter gezielter Coding-Agent-Auftrag vorbereitet.
+
+**Einzelauftrag 2 – Sicherer Direktstart:**
+
+Untersuchen, wie Docker Agent v1.142.0 ohne Sandbox-MCP-Gateway innerhalb einer technisch begrenzten Laufzeit betrieben werden kann.
+
+Ein Ergebnis dieses Auftrags liegt noch nicht vor.
+
+## 6. Offene Arbeiten
+
+| Priorität | Arbeitspaket | Ziel |
+|---|---|---|
+| 1 | Sicheren Ausführungsweg bestimmen | Gateway-unabhängige oder wirksam begrenzte Agentenausführung |
+| 2 | Werkzeugrechte absichern | Ausschließlich `get_environment_info` nutzbar |
+| 3 | Dateisystem und Docker isolieren | Keine unautorisierten Host- oder FAS-Zugriffe |
+| 4 | Netzwerk und Credentials begrenzen | Ausschließlich erforderliche Endpunkte und Berechtigungen |
+| 5 | Ressourcen und Abbruchmechanismen absichern | Kontrollierbarer Testbetrieb |
+| 6 | Tatsächlichen Werkzeugaufruf durchführen | Reproduzierbarer Aufruf mit überprüfbarer Rückgabe |
+| 7 | Einzelagentenauftrag prüfen | Funktions- und Sicherheitsnachweis, unabhängige Prüfung, Abnahmeentscheidung |
+
+Zusammengehörige Prüfungen werden gebündelt. Bereits abgeschlossene Bestandsaufnahmen und Tests werden nur bei konkretem Erkenntnisbedarf wiederholt.
+
+## 7. Nächster Arbeitsschritt
+
+**Ergebnis des externen Coding-Agent-Einzelauftrags 2 auswerten.**
+
+Gesucht wird ein konkreter technischer Entwurf für die sichere Ausführung von Docker Agent ohne die bisherige MCP-Gateway-Abhängigkeit.
+
+Anschließend:
+
+1. Bevorzugten Ausführungsweg auswählen.
+2. Schutzmaßnahmen innerhalb des autorisierten Handlungsrahmens gezielt umsetzen und prüfen.
+3. Erst bei wirksamen Schutzgrenzen den echten Werkzeugaufruf durchführen.
+
+Keine weiteren allgemeinen CLI-Inventuren oder wiederholten Gateway-Policy-Abfragen ohne neuen Erkenntnisbedarf.
+
+## 8. Dokumentations- und Abnahmestatus
+
+Dieser Projektstatus ist eine operative Momentaufnahme. Er ändert keine normativen FAS-Grundlagendokumente.
+
+Die aktuellen Gateway-Prüfergebnisse stammen aus den übermittelten PowerShell-Ausgaben. Sie wurden nicht durch unabhängigen direkten Zugriff auf den Entwicklungs-PC reproduziert.
+
+Diese Fassung wird im maßgeblichen Projekt-Repository auf D: versioniert.
+
+**Abschlussbewertung:** Die Modell- und Werkzeugkonfiguration ist vorbereitet und geprüft. Die entscheidenden offenen Arbeiten betreffen die sichere Werkzeugausführung und deren technische Nachweise.
+
+**FAS-P2-GATEWAY-001: Offen.**
+
+**Phase 2 – Einzelagent: Weiterhin nicht abgenommen.**
