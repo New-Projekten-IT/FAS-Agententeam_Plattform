@@ -157,3 +157,20 @@ Die folgenden Befunde stammen aus vom Nutzer übermittelten PowerShell-Ausgaben.
 **Nächste konkrete Handlung:** Einmalig und gezielt für Docker Agent v1.142.0 klären, ob die vorhandene Konfiguration den ausschließlich auf `get_environment_info` begrenzten Agenten **ohne MCP-Gateway-Initialisierung** betreiben kann oder welche bestehende technische Schutzfunktion den Gateway-Zugriff wirksam verhindert. Keine erneuten allgemeinen Inventuren, Netzwerkdiagnosen oder Namespace-Prüfungen; kein zusätzlicher Modellvermittler ohne nachgewiesene Notwendigkeit.
 
 **Redaktioneller/operativer Status:** Die Prüfung des technischen Kurzberichts führte zu präzisierten Nachweisformulierungen; der Nutzer hat hier noch keine gesonderte redaktionelle Freigabe dieser aktualisierten `PROJECT_STATUS.md` ausgesprochen. Die ursprünglich extern erzeugte Prüffassung liegt inzwischen auf C: und D: vor; ein neuer Git-Commit der aktuellen Fortschreibung ist noch nicht nachgewiesen. Die vorherige Commit-ID bezeichnet ausschließlich den früheren Dokumentenstand. **Phase 2 bleibt nicht abgenommen.**
+## 10. Fortschreibung 29.10.2026 – VS-Code-Vorbereitung und PC-Wechsel
+
+Die Vorbereitung auf dem Alltags-PC wurde am 29.10.2026 abgeschlossen.
+
+Das FAS-Phase-2-VS-Code-Transferpaket V2 umfasst elf Dateien und befindet sich auf der mobilen Festplatte unter `Prompts/FAS Phase 2 – Transferordner VS Code-Dateien/v2`.
+
+Die unabhängige KI-Kontrollinstanz bewertete das Paket als fachlich freigabefähig mit gezielten Präzisierungen.
+
+Laut den vom Nutzer übermittelten PowerShell-Ausgaben bestanden zehn SHA-256-Vergleiche. Die anschließende Dateibestandsprüfung meldete `DATEIBESTAND_VOLLSTAENDIG`, elf Dateien und zehn Manifest-Einträge. Eine unabhängige technische Reproduktion erfolgte nicht.
+
+Die drei Grundlagendokumente vom 29.10.2026 bilden die vom Nutzer festgelegte neue fachliche Basis. Ihre autorisierte Übernahme in die geschützten Originalbereiche des Entwicklungs-PCs ist noch nicht nachgewiesen.
+
+Nächster Schritt: Am Entwicklungs-PC einen getrennten VS-Code-Analyse-Workspace vorbereiten, vorhandenen Agenten-Harness, Modellverbindung und effektive Rechte prüfen und `FAS-P2-GATEWAY-001` gezielt analysieren.
+
+Nach dieser einmaligen Diagnose einen konkreten technischen Lösungsweg verfolgen. Vor einem realen Docker-Agent-Werkzeugaufruf müssen die dafür erforderlichen Sicherheitsgrenzen wirksam sein.
+
+Phase 2 bleibt bis zum erfolgreichen begrenzten Werkzeugaufruf, dem vollständigen Entwicklungsauftrag und der vorgesehenen unabhängigen Prüfung offen.
