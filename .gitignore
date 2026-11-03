@@ -77,3 +77,16 @@
 # 08_audit/
 # 11_backup_restore/
 # Laufzeitdaten, Secrets, Caches und technische Konfigurationen
+# FAS Coding-Agent - freigegebene Dateien
+!/coding-agent/
+/coding-agent/*
+!/coding-agent/config/
+/coding-agent/config/*
+!/coding-agent/config/GUARDRAILS.md
+!/coding-agent/config/WORKFLOW.md
+!/coding-agent/auftraege/
+/coding-agent/auftraege/*
+!/coding-agent/auftraege/auftrag-001.md
+!/coding-agent/vorlagen/
+/coding-agent/vorlagen/*
+!/coding-agent/vorlagen/auftrag.md
