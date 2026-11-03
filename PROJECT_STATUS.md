@@ -1,9 +1,9 @@
 # FAS-Agententeam-Plattform – PROJECT_STATUS
 
-**Stand:** 30.10.2026  
+**Stand:** 03.11.2026
 **Projektphase:** Phase 2 – Einzelagent  
 **Abnahmestatus:** Nicht abgenommen  
-**Aktueller Schwerpunkt:** Sichere Docker-Agent-Werkzeugausführung ohne unkontrollierten MCP-Gateway-Zugriff
+**Aktueller Schwerpunkt:** Sichere Docker-Agent-Werkzeugausführung sowie Aufbau der Coding-Agent-Auftragsinfrastruktur und Vorbereitung von FAS-GitSync
 
 ## 1. Gesamtstatus
 
@@ -131,6 +131,37 @@ Untersuchen, wie Docker Agent v1.142.0 ohne Sandbox-MCP-Gateway innerhalb einer 
 
 Ein Ergebnis dieses Auftrags liegt noch nicht vor.
 
+## 5a. Coding-Agent-Infrastruktur und Git-Versionierung
+
+Am 03.11.2026 wurde Abschnitt 1 von FAS-CA-EINR-001 (Revision 2) auf D: eingerichtet.
+
+Angelegt wurden:
+- `coding-agent/config/GUARDRAILS.md`
+- `coding-agent/config/WORKFLOW.md`
+- `coding-agent/auftraege/auftrag-001.md`
+- `coding-agent/vorlagen/auftrag.md`
+- Das zugehoerige Ergebnisverzeichnis
+
+Vier SHA-256-Vergleiche bestaetigten die Inhaltsgleichheit der angelegten Dateien mit den Quelldateien.
+
+Die Git-Positivliste wurde gezielt erweitert. Die fuenf vorgesehenen Dateien wurden nach lokaler Dateiauswahl- und Inhaltspruefung versioniert.
+
+**Lokaler Commit auf D:** `c628b8183a4fffe1dc90755512df9b343c7d0fcb`
+**Branch:** `main`
+**Commit-Nachricht:** `chore: add coding agent infrastructure`
+
+Der Git-Arbeitsbaum war unmittelbar nach dem Commit sauber. Die Pruefung `git diff --cached --check` hatte zuvor drei Markdown-Formatierungswarnungen gemeldet. Der Commit wurde dennoch erstellt. Eine nachtraegliche Reparatur erfolgte nicht.
+
+Es erfolgte weder ein Push nach GitHub noch eine Synchronisation mit C:.
+
+Die Coding-Agent-Infrastruktur ist vorbereitet, jedoch noch nicht als sichere Ausfuehrungsumgebung nachgewiesen. Insbesondere sind die technischen Zugriffssperren, die Bindung an freigegebene Auftragsfassungen und der Schutz vor paralleler Ausfuehrung noch zu verifizieren.
+
+**auftrag-001:** Vollstaendige lesende Untersuchung des Docker-Agenten; der genaue Arbeitsbereich ist vor Ausfuehrung zu konkretisieren.
+
+**auftrag-002:** FAS-GitSync – Konsolidierung und sichere Automatisierung. Entwicklung und Tests sind strikt von produktiven Repositories, GitHub-Zugriffen und produktiven Hintergrundaufgaben zu trennen.
+
+Die Produktivsetzung von FAS-GitSync ist nicht Bestandteil der bisherigen Einrichtungsarbeiten.
+
 ## 6. Offene Arbeiten
 
 | Priorität | Arbeitspaket | Ziel |
@@ -159,6 +190,16 @@ Anschließend:
 
 Keine weiteren allgemeinen CLI-Inventuren oder wiederholten Gateway-Policy-Abfragen ohne neuen Erkenntnisbedarf.
 
+### Ergaenzender Arbeitsablauf der Coding-Agent-Infrastruktur
+
+1. Diese Statusfortschreibung kontrolliert lokal versionieren.
+2. Git-Zustand auf D: abschliessend pruefen.
+3. Am Entwicklungs-PC Zugriffswege und Sicherheitsvoraussetzungen lesend feststellen.
+4. Die Synchronisation zwischen D:, C: und GitHub gesondert abstimmen.
+5. Auftrag 001 nach Konkretisierung des Arbeitsbereichs fachlich pruefen.
+6. Vor Agentenausfuehrung technische Schutzgrenzen nachweisen.
+7. FAS-GitSync getrennt und ausschliesslich isoliert entwickeln und testen.
+
 ## 8. Dokumentations- und Abnahmestatus
 
 Dieser Projektstatus ist eine operative Momentaufnahme. Er ändert keine normativen FAS-Grundlagendokumente.
@@ -168,6 +209,8 @@ Die aktuellen Gateway-Prüfergebnisse stammen aus den übermittelten PowerShell-
 Diese Fassung wird im maßgeblichen Projekt-Repository auf D: versioniert.
 
 **Abschlussbewertung:** Die Modell- und Werkzeugkonfiguration ist vorbereitet und geprüft. Die entscheidenden offenen Arbeiten betreffen die sichere Werkzeugausführung und deren technische Nachweise.
+
+Die Coding-Agent-Auftragsinfrastruktur wurde auf D: vorbereitet und lokal versioniert. Technische Sicherheitsnachweise am Entwicklungs-PC stehen aus. FAS-GitSync ist als priorisierter Folgeauftrag vorgesehen.
 
 **FAS-P2-GATEWAY-001: Offen.**
 
